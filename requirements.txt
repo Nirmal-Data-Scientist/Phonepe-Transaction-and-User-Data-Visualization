@@ -1,5 +1,5 @@
 streamlit==1.22.0
-pandas==2.0.1
+pandas==1.5.3
 numpy==1.23.5
 mysql-connector==2.2.9
 ydata-profiling==4.1.2
