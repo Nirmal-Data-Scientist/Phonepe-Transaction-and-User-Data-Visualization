@@ -1,12 +1,14 @@
 import streamlit as st
 import plotly.express as px
 import json
-
+from streamlit_extras.add_vertical_space import add_vertical_space
 
 
 st.set_page_config(page_title = 'Overview', layout = 'wide', page_icon = 'Related Images and Videos/Logo.png')
 
 st.title(':blue[Overview]')
+
+add_vertical_space(3)
 
 total_trans_count = st.session_state["agg_trans_df"]['Transaction_count'].sum()
 

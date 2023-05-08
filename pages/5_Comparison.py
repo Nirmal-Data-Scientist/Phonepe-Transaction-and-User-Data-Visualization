@@ -2,36 +2,21 @@ import streamlit as st
 import seaborn as sns
 import pandas as pd
 import plotly.express as px
-
+from streamlit_extras.add_vertical_space import add_vertical_space
 
 st.set_page_config(page_title = 'Comparitive Analysis', layout = 'wide', page_icon = 'Related Images and Videos/Logo.png')
 st.title(':blue[Comparitive Analysis]')
 
+add_vertical_space(3)
 
-
-# Define the state groups
-state_groups = {
-    'Northern Region': ['Jammu and Kashmir', 'Himachal Pradesh', 'Punjab', 'Chandigarh', 'Uttarakhand', 'Ladakh', 'Delhi', 'Haryana'],
-    'Central Region': ['Uttar Pradesh', 'Madhya Pradesh', 'Chhattisgarh'],
-    'Western Region': ['Rajasthan', 'Gujarat',  'Dadra and Nagar Haveli and Daman and Diu', 'Maharashtra'],
-    'Eastern Region': ['Bihar', 'Jharkhand', 'Odisha', 'West Bengal', 'Sikkim'],
-    'Southern Region': ['Andhra Pradesh', 'Telangana', 'Karnataka', 'Kerala', 'Tamil Nadu', 'Puducherry', 'Goa', 'Lakshadweep', 'Andaman and Nicobar Islands'],
-    'North-Eastern Region': ['Assam', 'Meghalaya', 'Manipur', 'Nagaland', 'Tripura', 'Arunachal Pradesh', 'Mizoram']
-}
+st.subheader(':blue[Regionwise Transaction volume comparison]')
 
 trans_df = st.session_state['agg_trans_df']
 user_df = st.session_state["agg_user_df"]
 
-# Create a new column 'Region' in the trans_df and user_df based on the state groups
-trans_df['Region'] = trans_df['Region'] = trans_df['State'].apply(lambda x: [k for k, v in state_groups.items() if x in v][0])
 trans_df["Transaction_amount(B)"] = trans_df["Transaction_amount"] / 1e9
 year_order = sorted(trans_df["Year"].unique())
 trans_df["Year"] = pd.Categorical(trans_df["Year"], categories=year_order, ordered=True)
-
-
-user_df['Region'] = trans_df['Region'] = user_df['State'].apply(lambda x: [k for k, v in state_groups.items() if x in v][0])
-
-
 
 fig1 = sns.catplot(x="Year", y="Transaction_amount", col="Region", data=trans_df, kind="bar", errorbar=None, height=5, aspect=1.5, col_wrap=2, sharex=False)
 
@@ -43,46 +28,48 @@ sns.set_style("white")
 st.pyplot(fig1)
 
 
-transaction_types = trans_df['Transaction_type'].unique()
+st.subheader(':blue[Transaction breakdown by Transaction type]')
 
-st.subheader('Transaction Breakdown')
-
-# Allow user to select state, year, and quarter
 col1, col2, col3 = st.columns([5, 3, 1])
 
-selected_states = col1.multiselect("Select State(s)", st.session_state['states'], key='selected_states')
+selected_states = col1.multiselect("Select state(s)", st.session_state['states'], key='selected_states')
 year1 = col2.selectbox("Year", st.session_state['years'], key='year1')
 quarter_options = ["All"] + list(st.session_state['quarters'])
 quarter1 = col3.selectbox("Quarter", quarter_options, key='quarter1')
 
-if quarter1 != 'All':
-    suffix1 = "st" if quarter1 == 1 else "nd" if quarter1 == 2 else "rd" if quarter1 == 3 else "th"
+transaction_types = trans_df['Transaction_type'].unique()
+
 
 trans_df = st.session_state["agg_trans_df"]
-
-
 
 trans_df = trans_df[(trans_df["Year"] == year1)]
 
 if quarter1 != "All":
     trans_df = trans_df[(trans_df["Quarter"] == quarter1)]
 
-placeholder = st.empty()
+suffix1 = " quarters" if quarter1 == 'All' else "st" if quarter1 == 1 else "nd" if quarter1 == 2 else "rd" if quarter1 == 3 else "th"
+
+title1 = f"Transaction details comparison of the selected states for {str(quarter1).lower()}{suffix1} {'' if quarter1 == 'All' else 'quarter'} of {year1}"
+
+if len(selected_states) == 1:
+    state_str = ''.join(selected_states)
+    title1 = f"Transaction details of {state_str} for {str(quarter1).lower()}{suffix1} {'' if quarter1 == 'All' else 'quarter'} of {year1}"
 
 if selected_states:
     trans_df = trans_df[trans_df["State"].isin(selected_states)]
     trans_df = trans_df.sort_values("Transaction_count", ascending=False)
-
-    fig1 = px.bar(
+    
+    fig2 = px.bar(
                 trans_df, x="Transaction_type", y="Transaction_count", 
                 color="State",
                 color_discrete_sequence=px.colors.qualitative.Plotly,
                 barmode='group',
-                title=f"Transaction details for {selected_states if selected_states else 'All States'} in the {quarter1}{suffix1 if quarter1 != 'All' else ''} quarter of {year1}",
-                labels=dict(Transaction_count='Transaction Count', Transaction_type='Transaction Type')
+                title=title1,
+                labels=dict(Transaction_count='Transaction Count', Transaction_type='Transaction Type'),
+                hover_data={'Quarter': True}
                 )
 
-    fig1.update_layout(
+    fig2.update_layout(
         showlegend=False, 
         title={
             'x': 0.5,
@@ -92,50 +79,43 @@ if selected_states:
         }
     )
 
-    fig1.update_traces(marker=dict(line=dict(width=1, color='DarkSlateGrey')))
-    fig1.update_layout( width=850, height=550)
-    st.plotly_chart(fig1)
+    fig2.update_traces(marker=dict(line=dict(width=1, color='DarkSlateGrey')))
+    fig2.update_layout( width=850, height=550)
+    st.plotly_chart(fig2)
 else:
-    placeholder.info("Please select at least one state to display the plot.")
+    column, buffer = st.columns([5,4])
+    column.info("Please select atleast one state to display the plot.")
+    add_vertical_space(8)
 
 
 
-# Allow user to select state and transaction type
-col4, col5 = st.columns([4, 4])
+trans_df2 = st.session_state['agg_trans_df']
 
-selected_state2 = col4.selectbox("State", st.session_state['states'], key='selected_state2')
-selected_type = col5.selectbox("Transaction Type", transaction_types, key='selected_type')
+st.subheader(':blue[Transaction amount comparison - Quarterwise]')
 
-trans_df2 = st.session_state["agg_trans_df"]
-trans_df2 = trans_df2[(trans_df2["Transaction_type"] == selected_type)]
+col4, col5, buff = st.columns([3, 2, 4])
 
-if selected_state2:
-    trans_df2 = trans_df2[trans_df2["State"] == selected_state2]
+region2 = col4.selectbox('Region', trans_df2['Region'].unique(), key = 'region2')
+year2 = col5.selectbox('Year', st.session_state['years'], key = 'year2')
 
-trans_df2 = trans_df2.groupby(['State', 'Year', 'Quarter']).sum().reset_index()
+filtered_df = trans_df2[(trans_df2['Region'] == region2) & (trans_df2['Year'] == year2)]
 
-fig2 = px.line(
-             trans_df2, x="Quarter", y="Transaction_count", 
-             color="State",
-             color_discrete_sequence=px.colors.qualitative.Plotly,
-             title=f"{selected_type} transactions for {selected_state2 if selected_state2 else 'All States'} in {year1}",
-             labels=dict(Transaction_count='Transaction Count', Quarter='Quarter')
-             )
+filtered_df['Quarter'] = 'Quarter ' + filtered_df['Quarter'].astype(str)
 
-fig2.update_layout(
-    showlegend=True, 
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-    title={
-        'x': 0.5,
-        'xanchor': 'center',
-        'y': 0.9,
-        'yanchor': 'top'
-    }
-)
+fig3 = px.pie(filtered_df, values='Transaction_amount(B)', names='Quarter', color='Quarter',
+             title=f'Transaction amount Comparison of {region2} for the year {year2}')
 
-fig2.update_traces(marker=dict(line=dict(width=1, color='DarkSlateGrey')))
-fig2.update_xaxes(tickmode='array', tickvals=list(range(0,5)))
-fig2.update_layout( width=850, height=550)
+fig3.update_traces(textposition='inside', textinfo='percent+label')
 
+fig3.update_layout(
+                    title={
+                        'x': 0.45,
+                        'xanchor': 'center',
+                        'y': 0.9,
+                        'yanchor': 'top'
+                    }
+                    )
 
-st.plotly_chart(fig2)
+fig3.update_layout( width=850, height=550)
+
+st.plotly_chart(fig3)

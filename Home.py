@@ -8,15 +8,23 @@ from streamlit_pandas_profiling import st_profile_report
 from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_extras.add_vertical_space import add_vertical_space
 
-st.set_page_config(page_title = 'PhonePe Data Visualization', layout = 'wide', page_icon = 'Related Images and Videos/Logo.png')
+st.set_page_config(
+                    page_title = 'PhonePe Data Visualization', layout = 'wide',
+                    page_icon = 'Related Images and Videos/Logo.png'
+                    )
 
 st.title(':blue[PhonePe Data Visualization]')
 
 add_vertical_space(2)
 
-st.write("""PhonePe has launched PhonePe Pulse, a data analytics platform that provides insights into how Indians are using digital payments.
-         With over 30 crore registered users and 2000 crore transactions, PhonePe, India's largest digital payments platform with 46% UPI market share, has a unique ring-side view into the Indian digital payments story.
-         Through this app, you can now easily access and visualize the data provided by PhonePe Pulse, gaining deep insights and interesting trends into how India transacts with digital payments.""")
+st.write(
+        """PhonePe has launched PhonePe Pulse, a data analytics platform that provides insights into how
+         Indians are using digital payments. With over 30 crore registered users and 2000 crore transactions, 
+         PhonePe, India's largest digital payments platform with 46% UPI market share, has a 
+         unique ring-side view into the Indian digital payments story. Through this app, you can now easily
+         access and visualize the data provided by PhonePe Pulse, gaining deep insights and 
+         interesting trends into how India transacts with digital payments."""
+         )
 
 add_vertical_space(2)
 
@@ -40,15 +48,20 @@ top_trans_pin_df = pd.read_csv(r'Miscellaneous/top_trans_pin.csv')
 top_user_dist_df = pd.read_csv(r'Miscellaneous/top_user_dist.csv')
 top_user_pin_df = pd.read_csv(r'Miscellaneous/top_user_pin.csv')
 
-# Key Metrics as cards
-
 col1, col2, col3 = st.columns(3)
 
 total_reg_users = top_user_dist_df['Registered_users'].sum()
-col1.metric(label = 'Total Registered Users', value = '{:.2f} Cr'.format(total_reg_users/100000000), delta = 'Forward Trend')
+col1.metric(
+            label = 'Total Registered Users',
+            value = '{:.2f} Cr'.format(total_reg_users/100000000),
+            delta = 'Forward Trend'
+            )
 
 total_app_opens = map_user_df['App_opens'].sum()
-col2.metric(label = 'Total App Opens', value = '{:.2f} Cr'.format(total_app_opens/100000000), delta = 'Forward Trend')
+col2.metric(
+            label = 'Total App Opens', value = '{:.2f} Cr'.format(total_app_opens/100000000),
+            delta = 'Forward Trend'
+            )
 
 col3.metric(label = 'Total Transaction Count', value = '2000 Cr +', delta = 'Forward Trend')
 
@@ -57,6 +70,8 @@ style_metric_cards()
 add_vertical_space(2)
 
 st.image('Related Images and Videos/pulse-video.gif', use_column_width = True)
+
+add_vertical_space(2)
 
 if 'options' not in st.session_state:
     st.session_state['options'] = {
@@ -78,15 +93,18 @@ df_names = [
 if 'df_list' not in st.session_state:
     st.session_state['df_list'] = []
     
-    # Iterate over the list of data frame names
     for var_name in df_names:
         st.session_state[var_name] = globals()[var_name]
         st.session_state['df_list'].append(var_name)
 
 
 col, buff = st.columns([2, 4])
-option = col.selectbox(label='Data', options=list(st.session_state['options'].keys()), key='df')
 
+option = col.selectbox(
+                        label='Data',
+                        options=list(st.session_state['options'].keys()),
+                        key='df'
+                        )
 
 tab1, tab2 = st.tabs(['Report and Dataset', 'Download Dataset'])
 
@@ -104,8 +122,10 @@ with tab1:
         st_profile_report(pr)
         
     if show_df:
-        st.experimental_data_editor(data = globals()[st.session_state['options'][option]], use_container_width=True)
-
+        st.experimental_data_editor(
+                                    data = globals()[st.session_state['options'][option]],
+                                    use_container_width=True
+                                    )
 
 with tab2:
     col1, col2, col3 = st.columns(3)
@@ -119,7 +139,18 @@ with tab2:
     df.to_excel(excel_buffer, engine ='xlsxwriter', index = False)
     excel_bytes = excel_buffer.getvalue()
     
-    col1.download_button("Download CSV file", data = csv, file_name = f'{option}.csv', mime = 'text/csv', key = 'csv')
-    col2.download_button("Download JSON file", data = json, file_name = f'{option}.json', mime = 'application/json', key = 'json')
-    col3.download_button("Download Excel file", data = excel_bytes, file_name = f'{option}.xlsx',
-                        mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', key = 'excel')
+    col1.download_button(
+                         "Download CSV file", data = csv,
+                         file_name = f'{option}.csv',
+                         mime = 'text/csv', key = 'csv'
+                         )
+    col2.download_button(
+                         "Download JSON file", data = json,
+                         file_name = f'{option}.json',
+                         mime = 'application/json', key = 'json'
+                         )
+    col3.download_button("Download Excel file", data = excel_bytes,
+                         file_name = f'{option}.xlsx',
+                         mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                         key = 'excel'
+                         )

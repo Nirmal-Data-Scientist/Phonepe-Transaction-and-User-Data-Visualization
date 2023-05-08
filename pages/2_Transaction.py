@@ -1,10 +1,10 @@
 import streamlit as st
 import plotly.express as px
-
+from streamlit_extras.add_vertical_space import add_vertical_space
 
 st.set_page_config(page_title = 'Transaction', layout = 'wide', page_icon = 'Related Images and Videos/Logo.png')
 st.title(':blue[Transaction]')
-
+add_vertical_space(3)
 
 # Get unique values for state, year, and quarter from the aggregated transaction dataframe
 
@@ -22,7 +22,7 @@ if 'quarters' not in st.session_state:
     st.session_state["quarters"] = quarters
 
 
-st.subheader(':blue[Transaction Breakdown]')
+st.subheader(':blue[Transaction amount breakdown]')
 
 # Allow user to select state, year, and quarter
 col1, col2, col3 = st.columns([5, 3, 1])
@@ -39,16 +39,16 @@ else:
     trans_df = st.session_state["agg_trans_df"]
     trans_df = trans_df[(trans_df["State"] == state1) & (trans_df["Year"] == year1)]
 
-trans_df = trans_df.sort_values("Transaction_count", ascending=False)
+trans_df = trans_df.sort_values("Transaction_amount", ascending=False)
 
 suffix1 = " quarters" if quarter1 == 'All' else "st" if quarter1 == '1' else "nd" if quarter1 == '2' else "rd" if quarter1 == '3' else "th"
 
 fig1 = px.bar(
-             trans_df, x="Transaction_type", y="Transaction_count", 
+             trans_df, x="Transaction_type", y="Transaction_amount", 
              color="Transaction_type",
              color_discrete_sequence=px.colors.qualitative.Plotly,
              title=f"Transaction details of {state1} for {quarter1.lower()}{suffix1} {'' if quarter1 == 'All' else 'quarter'} of {year1}",
-             labels=dict(Transaction_count='Transaction Count', Transaction_type='Transaction Type'),
+             labels=dict(Transaction_amount='Transaction Amount', Transaction_type='Transaction Type'),
              hover_data={'Quarter': True}
              )
 
@@ -114,7 +114,7 @@ fig2.update_layout(margin={"r":0,"t":0,"l":0,"b":0}, width = 900, height = 500)
 
 st.plotly_chart(fig2)
 
-st.subheader(":blue[Breakdown in terms of Transaction type ]")
+st.subheader(":blue[Breakdown by transaction count proportion]")
 
 state_pie, year_pie, quarter_pie = st.columns([5, 3, 1])
 
