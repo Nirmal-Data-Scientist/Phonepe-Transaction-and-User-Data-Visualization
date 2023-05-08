@@ -1,4 +1,5 @@
-# Phonepe_Pulse
+# Phonepe Pulse - Data Visualization Web App
+
 The Phonepe Data Visualization project is a Python-based solution that extracts data from the Phonepe Pulse Github repository, transforms and stores it in a MySQL database, and displays it through an interactive dashboard using Streamlit, Plotly and few other visualization and data manipulation libraries. The solution includes multiple pages with various visualizations, allowing users to select different facts and figures to display. The project is efficient, secure, and user-friendly, providing valuable insights and information about the data in the Phonepe Pulse Github repository.
 
 ## Prerequisites
@@ -81,6 +82,14 @@ To modify the app, you can:
 5. Improving customer experience: By analyzing transaction data and identifying areas where customers are experiencing friction or challenges, data scientists can work with product teams to improve the customer experience and increase customer satisfaction.
 
 ## Web App Snap
+
+<img width="956" alt="1 1" src="https://user-images.githubusercontent.com/123751119/236913668-de5143f7-40b9-467b-8ff9-cdc8a9ef666e.png">
+
+<img width="960" alt="2" src="https://user-images.githubusercontent.com/123751119/236913757-dfe16f66-1fa8-4d72-a7a0-556419772d5c.png">
+
+<img width="957" alt="3" src="https://user-images.githubusercontent.com/123751119/236913796-ccef8b7e-12ce-4db9-b2bb-528c1d780f33.png">
+
+<img width="955" alt="4" src="https://user-images.githubusercontent.com/123751119/236913858-4f0d16c2-e5a7-4084-9cec-9f70f9a31243.png">
 
 ## Web App Demo Video
 
