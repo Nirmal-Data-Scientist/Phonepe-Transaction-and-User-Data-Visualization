@@ -82,7 +82,7 @@ st.plotly_chart(trans_district_fig)
 
 st.subheader(':blue[Registered User Count by State]')
 
-with open("Miscellaneous\india_states.json") as f:
+with open(r"Miscellaneous/india_states.json") as f:
     geojson = json.load(f)
 
 if 'geojson' not in st.session_state:
