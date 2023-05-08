@@ -49,13 +49,13 @@ if state1 == 'All':
 
 fig1 = px.line(df, x='Quarter', y='Transaction_count', color='Year', title=title1)
 fig1.update_xaxes(tickmode='array', tickvals=list(range(1,5)))
-fig1.update_layout(height = 500, width = 900)
+fig1.update_layout(height = 500, width = 900, yaxis_title = 'Transaction Count')
 fig1.update_layout(title={'x': 0.5, 'xanchor': 'center', 'y': 0.9, 'yanchor': 'bottom'})
 
 
 fig2 = px.line(df, x='Quarter', y='Transaction_amount', color='Year', title=title2)
 fig2.update_xaxes(tickmode='array', tickvals=list(range(1,5)))
-fig2.update_layout(height = 500, width = 900)
+fig2.update_layout(height = 500, width = 900, yaxis_title = 'Transaction Amount')
 fig2.update_layout(title={'x': 0.5, 'xanchor': 'center', 'y': 0.9, 'yanchor': 'bottom'})
 
 tab1, tab2 = st.tabs(['🫰Transaction Count Trend', '💰Transaction Amount Trend'])
@@ -93,11 +93,11 @@ title3 = f"Top districts in {'India' if state2 == 'All' else state2} by Transact
 
 
 data1 = data[data["District"].isin(top_districts1)]
-data1["Transaction_count_millions"] = data1["Transaction_count"] / 1e6
 
+axis_format = '~s'
 
 chart1 = alt.Chart(data1, height=500, width=900).mark_bar(size=18).encode(
-    x=alt.X("Transaction_count_millions", title="Transaction Count (in millions)"),
+    x=alt.X("Transaction_count", title="Transaction Count", axis=alt.Axis(format=axis_format)),
     y=alt.Y("District", sort=top_districts1, title=None),
     color="State",
     tooltip=["District", "State", "Year", "Quarter", "Transaction_count"]
@@ -113,6 +113,7 @@ chart1 = alt.Chart(data1, height=500, width=900).mark_bar(size=18).encode(
 )
 
 
+
 top_districts2 = data.groupby("District")["Transaction_amount"].sum().nlargest(10).index.tolist()
 
 title4 = f"Top districts in {'India' if state2 == 'All' else state2} by Transaction amount during {str(quarter2).lower()}{suffix1} {'' if quarter2 == 'All' else 'quarter'} of {year2}"
@@ -120,7 +121,7 @@ title4 = f"Top districts in {'India' if state2 == 'All' else state2} by Transact
 data2 = data[data["District"].isin(top_districts2)]
 
 chart2 = alt.Chart(data2, height = 500, width = 900).mark_bar(size=18).encode(
-    x=alt.X("sum(Transaction_amount)", title="Transaction Amount"),
+    x=alt.X("sum(Transaction_amount)", title="Transaction Amount", axis=alt.Axis(format=axis_format)),
     y=alt.Y("District", sort=top_districts2, title=None),
     color="State",
     tooltip=["District", "State", "Year", "Quarter", "Transaction_amount"]
@@ -180,12 +181,11 @@ filtered_top_pincodes = filtered_pin_trans.groupby('Pincode')['Transaction_amoun
 filtered_top_pincodes['Pincode'] = filtered_top_pincodes['Pincode'].astype(str)
 
 
-axis_format = '~s'
 suffix2 = " quarters" if quarter3 == 'All' else "st" if quarter3 == 1 else "nd" if quarter3 == 2 else "rd" if quarter3 == 3 else "th"
 
 if trend3 == 'Top 10 States by Transaction Volume':
     chart = alt.Chart(filtered_top_states, height = 500, width = 900).mark_bar(size=18).encode(
-        x=alt.X('Transaction_amount', axis=alt.Axis(format=axis_format)),
+        x=alt.X('Transaction_amount', axis=alt.Axis(format=axis_format), title="Transaction Amount"),
         y=alt.Y('State', sort='-x'),
         tooltip=['State', alt.Tooltip('Transaction_amount',
                                        format='.2f')]
@@ -196,7 +196,7 @@ if trend3 == 'Top 10 States by Transaction Volume':
 
 elif trend3 == 'Top 10 Districts by Transaction Volume':
     chart = alt.Chart(filtered_top_districts, height = 500, width = 900).mark_bar(size=18).encode(
-        x=alt.X('Transaction_amount', axis=alt.Axis(format=axis_format)),
+        x=alt.X('Transaction_amount', axis=alt.Axis(format=axis_format), title="Transaction Amount"),
         y=alt.Y('District', sort='-x'),
         tooltip=['District', alt.Tooltip('Transaction_amount',
                                           format='.2f')]
@@ -207,7 +207,7 @@ elif trend3 == 'Top 10 Districts by Transaction Volume':
 
 elif trend3 == 'Top 10 Pincodes by Transaction Volume':
     chart = alt.Chart(filtered_top_pincodes, height = 500, width = 900).mark_bar(size=18).encode(
-        x=alt.X('Transaction_amount', axis=alt.Axis(format=axis_format)),
+        x=alt.X('Transaction_amount', axis=alt.Axis(format=axis_format), title="Transaction Amount"),
         y=alt.Y('Pincode', sort='-x'),
         tooltip=['Pincode', alt.Tooltip('Transaction_amount',
                                           format='.2f')]

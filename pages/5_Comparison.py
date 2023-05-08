@@ -69,8 +69,7 @@ if selected_states:
                 hover_data={'Quarter': True}
                 )
 
-    fig2.update_layout(
-        showlegend=False, 
+    fig2.update_layout( 
         title={
             'x': 0.5,
             'xanchor': 'center',

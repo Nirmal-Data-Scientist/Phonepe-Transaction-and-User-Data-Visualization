@@ -183,7 +183,7 @@ fig4 = px.density_mapbox(map_user_df_filtered, lat='Latitude', lon='Longitude', 
                         opacity=0.8, hover_data={'Latitude': False, 'Longitude': False, 'State': True}
                         )
 fig4.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
-                  mapbox=dict(layers=[dict(sourcetype='geojson',                                            source=st.session_state['geojson'],
+                  mapbox=dict(layers=[dict(sourcetype='geojson', source=st.session_state['geojson'],
                                             type='line',
                                             color='white',
                                             opacity=0.8,
