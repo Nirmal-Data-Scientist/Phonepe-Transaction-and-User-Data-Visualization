@@ -1,5 +1,7 @@
 # Phonepe Pulse - Data Visualization Web App
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://nirmal7781-phonepe-pulse-home-01h2v4.streamlit.app/)
+
 The Phonepe Data Visualization project is a Python-based solution that extracts data from the Phonepe Pulse Github repository, transforms and stores it in a MySQL database, and displays it through an interactive dashboard using Streamlit, Plotly and few other visualization and data manipulation libraries. The solution includes multiple pages with various visualizations, allowing users to select different facts and figures to display. The project is efficient, secure, and user-friendly, providing valuable insights and information about the data in the Phonepe Pulse Github repository.
 
 ## Prerequisites
@@ -57,10 +59,13 @@ To run the app, follow these steps:
 
     1. Clone the repository to your local machine using the following command: git clone [https://github.com/Nirmal7781/Phonepe_Pulse.git].
     2. Install the required libraries by running the following command: pip install -r requirements.txt.
-    3. Open a terminal window and navigate to the directory where the app is located using the following command: cd [.py file directory].
-    4. Run the command streamlit run Home.py to start the app.
-    5. The app should now be running on a local server. If it doesn't start automatically, you can access it by going to either 
+    3. Run the .ipynb file to clean and transform the data and generate the eight CSV files.
+    4. Create a MySQL database and tables, define constraints, and push data into MySQL using user-defined functions.
+    5. Open a terminal window and navigate to the directory where the app is located using the following command: cd [Home.py file directory].
+    6. Run the Streamlit app using the command [streamlit run Home.py] and access the app through the local URL provided.
+    7. The app should now be running on a local server. If it doesn't start automatically, you can access it by going to either 
        * Local URL: [http://localhost:8501] or * Network URL: [http://192.168.43.83:8501].
+    8. Explore the different pages of the app, enter inputs as required, and interact with the visualizations to gain insights into the PhonePe transaction data.
 
 To modify the app, you can:
 
@@ -71,15 +76,15 @@ To modify the app, you can:
 
 ## Potential Applications
 
-1. Identifying trends and patterns: Data scientists can use the app to identify trends and patterns in transaction data, such as which categories of transactions are increasing or decreasing in frequency.
+1. **Identifying trends and patterns**: Data scientists can use the app to identify trends and patterns in transaction data, such as which categories of transactions are increasing or decreasing in frequency.
 
-2. Conducting market research: The app can be used to analyze transaction data to gain insights into consumer behavior and preferences, which can be valuable for conducting market research.
+2. **Conducting market research**: The app can be used to analyze transaction data to gain insights into consumer behavior and preferences, which can be valuable for conducting market research.
 
-3. Developing predictive models: The insights gained from analyzing the transaction data can be used to develop predictive models, such as predicting future transaction volumes or identifying customers who are likely to churn.
+3. **Developing predictive models**: The insights gained from analyzing the transaction data can be used to develop predictive models, such as predicting future transaction volumes or identifying customers who are likely to churn.
 
-4. Monitoring business performance: Data scientists can use the app to monitor the performance of various business metrics, such as transaction volume, revenue, and customer acquisition and retention.
+4. **Monitoring business performance**: Data scientists can use the app to monitor the performance of various business metrics, such as transaction volume, revenue, and customer acquisition and retention.
 
-5. Improving customer experience: By analyzing transaction data and identifying areas where customers are experiencing friction or challenges, data scientists can work with product teams to improve the customer experience and increase customer satisfaction.
+5. **Improving customer experience**: By analyzing transaction data and identifying areas where customers are experiencing friction or challenges, data scientists can work with product teams to improve the customer experience and increase customer satisfaction.
 
 ## Web App Snap
 
