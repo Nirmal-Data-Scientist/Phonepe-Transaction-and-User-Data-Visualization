@@ -7,25 +7,14 @@ st.set_page_config(page_title = 'Trend Analysis', layout = 'wide', page_icon = '
 st.title(':blue[Trend Analysis]')
 
 
-state_groups = {
-    'Northern Region': ['Jammu and Kashmir', 'Himachal Pradesh', 'Punjab', 'Chandigarh', 'Uttarakhand', 'Ladakh', 'Delhi', 'Haryana'],
-    'Central Region': ['Uttar Pradesh', 'Madhya Pradesh', 'Chhattisgarh'],
-    'Western Region': ['Rajasthan', 'Gujarat', 'Dadra and Nagar Haveli and Daman and Diu', 'Maharashtra'],
-    'Eastern Region': ['Bihar', 'Jharkhand', 'Odisha', 'West Bengal', 'Sikkim'],
-    'Southern Region': ['Andhra Pradesh', 'Telangana', 'Karnataka', 'Kerala', 'Tamil Nadu', 'Puducherry', 'Goa', 'Lakshadweep', 'Andaman and Nicobar Islands'],
-    'North-Eastern Region': ['Assam', 'Meghalaya', 'Manipur', 'Nagaland', 'Tripura', 'Arunachal Pradesh', 'Mizoram']
-}
 
-# Add state group options
-state_options = list(state_groups.keys())
-state_group = st.selectbox('Select State Group', state_options, key='state_group')
+region1 = st.selectbox('Select State Group', st.session_state["agg_trans_df"]["Region"].unique(), key='region1')
 
-# Filter data based on user input state group
-selected_states = state_groups[state_group]
-df = st.session_state['map_trans_df'][st.session_state['map_trans_df']['State'].isin(selected_states)]
+
+df = st.session_state['map_trans_df'][st.session_state['map_trans_df']['Region'] == region1]
 
 # Create selectbox for user input state
-state1 = st.selectbox('Select State', selected_states, key='state1')
+state1 = st.selectbox('Select State', df['State'].unique(), key='state1')
 
 # Filter data based on user input state
 if state1 != 'All':

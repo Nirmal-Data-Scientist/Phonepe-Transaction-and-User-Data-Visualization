@@ -28,17 +28,45 @@ st.image('Related Images and Videos/1.png')
 
 add_vertical_space(2)
 
-# Reading from csv so as to make it work for everyone in streamlit cloud app...
-# Otherwise there's another file named Home_with_SQL_Part.py in Miscellaneous directory in this same repo...
+# Retrieve the MySQL credentials from Streamlit Secrets
 
-agg_trans_df = pd.read_csv(r'Miscellaneous\agg_trans.csv')
-agg_user_df = pd.read_csv(r'Miscellaneous\agg_user.csv')
-map_trans_df = pd.read_csv(r'Miscellaneous\map_trans.csv')
-map_user_df = pd.read_csv(r'Miscellaneous\map_user.csv')
-top_trans_dist_df = pd.read_csv(r'Miscellaneous\top_trans_dist.csv')
-top_trans_pin_df = pd.read_csv(r'Miscellaneous\top_trans_pin.csv')
-top_user_dist_df = pd.read_csv(r'Miscellaneous\top_user_dist.csv')
-top_user_pin_df = pd.read_csv(r'Miscellaneous\top_user_pin.csv')
+mysql_credentials = st.secrets["mysql"]; host = mysql_credentials["host"]; user = mysql_credentials["user"]
+password = mysql_credentials["password"]; database = mysql_credentials["database"]
+
+# Establish a connection to the MySQL database
+
+conn = mysql.connector.connect(
+    host=host,
+    user=user,
+    password=password,
+    database=database
+)
+
+cursor = conn.cursor()
+
+def get_dataframe(table_name):
+    query = f"SELECT * FROM {table_name}"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data, columns=[i[0] for i in cursor.description])
+    df['Year'] = df['Year'].astype(str)
+    return df
+
+agg_trans_df = agg_user_df = map_trans_df = map_user_df = \
+    top_trans_dist_df = top_trans_pin_df = top_user_dist_df = top_user_pin_df = None
+    
+table_names = [
+    'agg_trans', 'agg_user', 'map_trans',
+    'map_user', 'top_trans_dist', 'top_trans_pin',
+    'top_user_dist', 'top_user_pin'
+]
+
+for table_name in table_names:
+    var_name = f"{table_name}_df"
+    globals()[var_name] = get_dataframe(table_name)
+
+cursor.close()
+conn.close()
 
 # Key Metrics as cards
 
@@ -70,19 +98,13 @@ if 'options' not in st.session_state:
         'Top User Pincodewise': 'top_user_pin_df'
     }
 
-df_names = [
-            var_name for var_name in globals() 
-            if isinstance(globals()[var_name], pd.core.frame.DataFrame) and var_name.endswith('_df')
-            ]
-
 if 'df_list' not in st.session_state:
     st.session_state['df_list'] = []
     
-    # Iterate over the list of data frame names
-    for var_name in df_names:
-        st.session_state[var_name] = globals()[var_name]
-        st.session_state['df_list'].append(var_name)
-
+    for var_name in globals():
+        if isinstance(globals()[var_name], pd.core.frame.DataFrame) and var_name.endswith('_df'):
+            st.session_state[var_name] = globals()[var_name]
+            st.session_state['df_list'].append(var_name)
 
 col, buff = st.columns([2, 4])
 option = col.selectbox(label='Data', options=list(st.session_state['options'].keys()), key='df')
