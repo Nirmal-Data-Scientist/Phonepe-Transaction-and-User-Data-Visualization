@@ -216,5 +216,4 @@ elif trend3 == 'Top 10 Pincodes by Transaction Volume':
         align="center", anchor = 'middle')
     )
 
-
 st.altair_chart(chart, use_container_width=True)
