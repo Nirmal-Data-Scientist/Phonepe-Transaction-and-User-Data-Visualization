@@ -31,14 +31,14 @@ add_vertical_space(2)
 # Reading from csv so as to make it work for everyone in streamlit cloud app...
 # Otherwise there's another file named Home_with_SQL_Part.py in Miscellaneous directory in this same repo...
 
-agg_trans_df = pd.read_csv(r'Miscellaneous\agg_trans.csv')
-agg_user_df = pd.read_csv(r'Miscellaneous\agg_user.csv')
-map_trans_df = pd.read_csv(r'Miscellaneous\map_trans.csv')
-map_user_df = pd.read_csv(r'Miscellaneous\map_user.csv')
-top_trans_dist_df = pd.read_csv(r'Miscellaneous\top_trans_dist.csv')
-top_trans_pin_df = pd.read_csv(r'Miscellaneous\top_trans_pin.csv')
-top_user_dist_df = pd.read_csv(r'Miscellaneous\top_user_dist.csv')
-top_user_pin_df = pd.read_csv(r'Miscellaneous\top_user_pin.csv')
+agg_trans_df = pd.read_csv(r'Miscellaneous/agg_trans.csv')
+agg_user_df = pd.read_csv(r'Miscellaneous/agg_user.csv')
+map_trans_df = pd.read_csv(r'Miscellaneous/map_trans.csv')
+map_user_df = pd.read_csv(r'Miscellaneous/map_user.csv')
+top_trans_dist_df = pd.read_csv(r'Miscellaneous/top_trans_dist.csv')
+top_trans_pin_df = pd.read_csv(r'Miscellaneous/top_trans_pin.csv')
+top_user_dist_df = pd.read_csv(r'Miscellaneous/top_user_dist.csv')
+top_user_pin_df = pd.read_csv(r'Miscellaneous/top_user_pin.csv')
 
 # Key Metrics as cards
 
