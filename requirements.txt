@@ -9,3 +9,4 @@ streamlit-extras==0.2.7
 plotly==5.14.1
 seaborn==0.12.2
 git-python==1.0.3
+XlsxWriter==3.1.0
