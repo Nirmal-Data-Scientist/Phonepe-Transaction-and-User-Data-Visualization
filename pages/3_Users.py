@@ -120,7 +120,8 @@ fig2 = px.scatter_mapbox(
                          lon="Longitude", 
                          size="Registered_users", 
                          hover_name="District",
-                         title=f"Registered Users by District"
+                         title=f"Registered Users by District",
+                         color_continuous_scale = 'viridis'
                      )
 
 fig2.update_layout(
@@ -268,7 +269,8 @@ fig4 = px.density_mapbox(
                                     'Latitude': False,
                                     'Longitude': False,
                                     'State': True
-                                    }
+                                    },
+                        color_continuous_scale = 'Blues'
                         )
 
 fig4.update_layout(
