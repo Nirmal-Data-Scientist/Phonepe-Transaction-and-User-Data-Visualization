@@ -89,7 +89,8 @@ user_state_fig = px.choropleth(
                                 locations = 'State',
                                 featureidkey = 'properties.ST_NM',
                                 color='Registered_users', projection = 'orthographic',
-                                labels = {'Registered_users': "Registered Users"}
+                                labels = {'Registered_users': "Registered Users"},
+                                color_continuous_scale = 'reds'
                                 )
 
 user_state_fig.update_geos(fitbounds='locations', visible=False)
