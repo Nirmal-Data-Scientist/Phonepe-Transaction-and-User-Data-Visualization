@@ -139,7 +139,14 @@ fig2.update_layout(
 tab1, tab2 = st.tabs(['🫰Transaction Count Trend', '💰Transaction Amount Trend'])
 
 tab1.plotly_chart(fig1)
+
+expander1 = tab1.expander('Detailed view')
+expander1.write(df.loc[:, ['Region', 'District', 'Year', 'Quarter', 'Transaction_count']].reset_index(drop = True))
+
 tab2.plotly_chart(fig2)
+
+expander2 = tab2.expander('Detailed view')
+expander2.write(df.loc[:, ['Region', 'District', 'Year', 'Quarter', 'Transaction_amount']].reset_index(drop = True))
 
 
 #2
@@ -242,7 +249,24 @@ chart2 = alt.Chart(
 tab3, tab4 = st.tabs(['🫰Transaction Count - Top Districts', '💰Transaction Amount - Top Districts'])
 
 tab3.altair_chart(chart1, use_container_width=True)
+
+expander3 = tab3.expander('Detailed view')
+expander3.write(top_trans_dist_filtered_1.loc[
+                                               :,
+                                               [
+                                                'State', 'District', 'Quarter', 'Transaction_count'
+                                                ]
+                                               ].reset_index(drop = True))
+
 tab4.altair_chart(chart2, use_container_width=True)
+
+expander4 = tab4.expander('Detailed view')
+expander4.write(top_trans_dist_filtered_2.loc[
+                                               :, 
+                                               [
+                                                'State', 'District', 'Quarter', 'Transaction_amount'
+                                                ]
+                                               ].reset_index(drop = True))
 
 
 #3
@@ -253,7 +277,15 @@ st.subheader(':blue[Other Key Trends over the years]')
 
 col8, col9, col10 = st.columns([5, 3, 1])
 
-trend3 = col8.selectbox('Trend', ('Top 10 States by Transaction Volume', 'Top 10 Districts by Transaction Volume', 'Top 10 Pincodes by Transaction Volume'), key = 'trend3')
+trend3 = col8.selectbox(
+                        'Trend',
+                        (
+                         'Top 10 States by Transaction Volume',
+                         'Top 10 Districts by Transaction Volume',
+                         'Top 10 Pincodes by Transaction Volume'
+                         ),
+                        key = 'trend3'
+                        )
 
 year3 = col9.selectbox('Year', st.session_state["years"], key = 'year3')
 
@@ -283,7 +315,6 @@ filtered_top_pincodes = filtered_pin_trans.groupby('Pincode')[
                                                                                                 ascending=False
                                                                                                 ).head(10)
 filtered_top_pincodes['Pincode'] = filtered_top_pincodes['Pincode'].astype(str)
-
 
 suffix2 = " quarters" if quarter3 == 'All' else "st" if quarter3 == 1 else "nd" if quarter3 == 2 else "rd" if quarter3 == 3 else "th"
 
@@ -363,3 +394,7 @@ elif trend3 == 'Top 10 Pincodes by Transaction Volume':
                                                               )
 
 st.altair_chart(chart3, use_container_width=True)
+
+expander5 = st.expander('Detailed view')
+data = filtered_top_states if trend3 == 'Top 10 States by Transaction Volume' else filtered_top_districts if trend3 == 'Top 10 Districts by Transaction Volume' else filtered_top_pincodes
+expander5.dataframe(data.reset_index(drop = True))

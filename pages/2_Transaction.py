@@ -43,11 +43,20 @@ quarter_options = ["All"] + list(map(str, quarters))
 quarter1 = col3.selectbox("Quarter", quarter_options, key='quarter1')
 
 if quarter1 != 'All':
-    trans_df = trans_df[(trans_df["State"] == state1) & (trans_df["Year"] == year1) & (trans_df["Quarter"] == int(quarter1))]
+    
+    trans_df = trans_df[
+                        (trans_df["State"] == state1) 
+                                    & 
+                         (trans_df["Year"] == year1) 
+                                    & 
+                        (trans_df["Quarter"] == int(quarter1))
+                        ]
+
 else:
+    
     trans_df = trans_df[(trans_df["State"] == state1) & (trans_df["Year"] == year1)]
 
-trans_df = trans_df.sort_values("Transaction_amount", ascending=False)
+trans_df = trans_df.sort_values("Transaction_amount", ascending=False).reset_index(drop = True)
 
 suffix1 = " quarters" if quarter1 == 'All' else "st" if quarter1 == '1' else "nd" if quarter1 == '2' else "rd" if quarter1 == '3' else "th"
 
@@ -75,6 +84,9 @@ fig1.update_layout(
 fig1.update_traces(marker = dict(line = dict(width = 1, color = 'DarkSlateGrey')))
 
 st.plotly_chart(fig1)
+
+expander1 = st.expander(label = 'Detailed view')
+expander1.write(trans_df.loc[:, ['Quarter', 'Transaction_type', 'Transaction_amount']].reset_index(drop=True))
 
 
 #2
@@ -107,23 +119,26 @@ fig2 = px.scatter_mapbox(map_df, lat = "Latitude", lon = "Longitude", hover_name
                         )
 
 fig2.update_layout(mapbox_style = 'carto-positron',
-                  mapbox_zoom = 3.5, mapbox_center = {"lat": 20.93684, "lon": 78.96288},
-                  geo=dict(
-                    scope = 'asia', projection_type = 'equirectangular',
-                    showocean = True,
-                    oceancolor = 'rgb(229, 255, 255)',
-                    showcountries = True,
-                ), 
-                  title={
-                    'x': 0.5,
-                    'xanchor': 'center',
-                    'y': 0.04,
-                    'yanchor': 'bottom'
-                },
-                  margin={"r":0,"t":0,"l":0,"b":0}, width = 900, height = 500
+                   mapbox_zoom = 3.5, mapbox_center = {"lat": 20.93684, "lon": 78.96288},
+                   geo=dict(
+                            scope = 'asia', projection_type = 'equirectangular',
+                            showocean = True,
+                            oceancolor = 'rgb(229, 255, 255)',
+                            showcountries = True,
+                           ), 
+                   title={
+                          'x': 0.5,
+                          'xanchor': 'center',
+                          'y': 0.04,
+                          'yanchor': 'bottom'
+                         },
+                   margin={"r":0,"t":0,"l":0,"b":0}, width = 900, height = 500
                   )
 
 st.plotly_chart(fig2)
+
+expander2 = st.expander(label = 'Detailed view')
+expander2.write(map_df.loc[:, ['State', 'District', 'Quarter', 'Transaction_amount']].reset_index(drop=True))
 
 
 #3
@@ -152,3 +167,6 @@ fig3 = px.pie(
 fig3.update_layout(width = 900, height = 500)
 
 st.plotly_chart(fig3)
+
+expander3 = st.expander(label = 'Detailed view')
+expander3.write(filtered_trans.loc[:, ['Quarter', 'Transaction_type', 'Transaction_count']].reset_index(drop = True))

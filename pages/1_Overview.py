@@ -11,7 +11,9 @@ agg_trans = st.session_state["agg_trans_df"]
 map_trans = st.session_state["map_trans_df"]
 map_user = st.session_state["map_user_df"]
 
+
 #1
+
 
 total_trans_count = agg_trans['Transaction_count'].sum()
 trans_type_count = agg_trans.groupby('Transaction_type')['Transaction_count'].sum()
@@ -25,7 +27,9 @@ trans_type_fig = px.pie(
 
 trans_type_fig.update_layout(width = 900, height = 500)
 
+
 #2
+
 
 trans_state = agg_trans.groupby('State')['Transaction_count'].sum().reset_index()
 trans_state_sorted = trans_state.sort_values(by='Transaction_count', ascending=False).head(15)
@@ -42,7 +46,9 @@ trans_state_fig.update_layout(
                                 width = 900, height = 500
                                 )
 
+
 #3
+
 
 trans_district = map_trans.groupby(['State', 'District'])[[
                                                             'Transaction_count', 'Transaction_amount'
@@ -65,7 +71,9 @@ trans_district_fig.update_layout(
                                  width = 900, height = 500
                                  )
 
+
 #4
+
 
 total_reg_users = map_user['Registered_users'].sum()
 user_state = map_user.groupby('State')['Registered_users'].sum().reset_index()

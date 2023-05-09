@@ -15,8 +15,6 @@ trans_df1["Transaction_amount(B)"] = trans_df1["Transaction_amount"] / 1e9
 year_order = sorted(trans_df1["Year"].unique())
 trans_df1["Year"] = pd.Categorical(trans_df1["Year"], categories=year_order, ordered=True)
 
-trans_df2['Quarter'] = 'Quarter ' + trans_df2['Quarter'].astype(str)
-
 quarter_options = ["All"] + list(st.session_state['quarters'])
 transaction_types = trans_df1['Transaction_type'].unique()
 
@@ -85,14 +83,14 @@ if selected_states:
     trans_df1 = trans_df1.sort_values("Transaction_count", ascending=False)
     
     fig2 = px.bar(
-                trans_df1, x="Transaction_type", y="Transaction_count", 
-                color="State",
-                color_discrete_sequence=px.colors.qualitative.Plotly,
-                barmode='group',
-                title=title1,
-                labels=dict(Transaction_count='Transaction Count', Transaction_type='Transaction Type'),
-                hover_data={'Quarter': True}
-                )
+                  trans_df1, x="Transaction_type", y="Transaction_count", 
+                  color="State",
+                  color_discrete_sequence=px.colors.qualitative.Plotly,
+                  barmode='group',
+                  title=title1,
+                  labels=dict(Transaction_count='Transaction Count', Transaction_type='Transaction Type'),
+                  hover_data={'Quarter': True}
+                  )
 
     fig2.update_layout(
                        width=850, height=550,
@@ -127,6 +125,8 @@ year2 = col5.selectbox('Year', st.session_state['years'], key = 'year2')
 
 filtered_df = trans_df2[(trans_df2['Region'] == region2) & (trans_df2['Year'] == year2)]
 
+filtered_df['Quarter'] = 'Quarter ' + filtered_df['Quarter'].astype(str)
+
 fig3 = px.pie(
               filtered_df, values='Transaction_amount(B)',
               names='Quarter', color='Quarter',
@@ -146,3 +146,23 @@ fig3.update_layout(
 fig3.update_traces(textposition='inside', textinfo='percent+label')
 
 st.plotly_chart(fig3)
+
+filtered_df['Year'] = filtered_df["Year"].astype(int)
+
+st.write()
+
+expander1 = st.expander('Detailed view')
+expander1.dataframe(
+                    filtered_df.groupby(
+                                        [
+                                         'Year','Quarter'
+                                         ]
+                                        ).agg(
+                                              {
+                                                'Transaction_amount(B)': sum
+                                                }
+                                              ).reset_index().sort_values(
+                                                                          'Transaction_amount(B)',
+                                                                          ascending = False
+                                                                          ).loc[:,['Quarter','Transaction_amount(B)']].reset_index(drop = True)
+                                              )

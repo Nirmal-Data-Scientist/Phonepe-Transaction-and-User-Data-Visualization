@@ -67,17 +67,17 @@ fig1 = px.treemap(
                   )
 
 fig1.update_layout(
-                    width=975, height=600,
-                    coloraxis_colorbar=dict(tickformat='.1%'),
-                    margin=dict(l=20, r=20, t=60, b=20),
-                    title = {
+                   width=975, height=600,
+                   coloraxis_colorbar=dict(tickformat='.1%'),
+                   margin=dict(l=20, r=20, t=60, b=20),
+                   title = {
                             "text": title1 ,
                              'x': 0.45,
                              'xanchor': 'center',
                              'y': 0.004,
                              'yanchor': 'bottom'
                              }
-                    )
+                   )
 
 fig1.update_traces(
                     hovertemplate = 
@@ -85,6 +85,9 @@ fig1.update_traces(
                     )
 
 st.plotly_chart(fig1)
+
+expander1 = st.expander(label = 'Detailed view')
+expander1.write(agg_user_df_filtered.loc[:, ['State', 'Quarter', 'Brand', 'Percentage']])
 
 add_vertical_space(2)
 
@@ -142,6 +145,9 @@ fig2.update_layout(
 fig2.update_geos(fitbounds='locations', visible=False)
 
 st.plotly_chart(fig2)
+
+expander2 = st.expander(label = 'Detailed view')
+expander2.write(map_user_df_filtered.loc[:, ['District', 'Quarter', 'Registered_users']].reset_index(drop=True))
 
 add_vertical_space(2)
 
@@ -215,6 +221,9 @@ fig3.update_layout(
 
 st.plotly_chart(fig3)
 
+expander3 = st.expander(label = 'Detailed view')
+expander3.write(top_user_dist_df_filtered.loc[:, ['District', 'Registered_users']].reset_index(drop=True))
+
 add_vertical_space(2)
 
 
@@ -225,12 +234,12 @@ st.subheader(':blue[Number of app opens by District]')
 
 col9, col10, buff2 = st.columns([5, 3, 7])
 
-year_options = [year for year in st.session_state['years'] if year != 2018]
+year_options = [year for year in st.session_state['years'] if year != '2018']
 
 year4 = col9.selectbox('Year', options=year_options, key='year4')
 
 
-if year4 == 2019:
+if year4 == '2019':
     quarter_options.remove('1')
     
 quarter4 = col10.selectbox("Quarter", options=quarter_options, key='quarter4')
@@ -284,3 +293,6 @@ fig4.update_layout(
                    )
 
 st.plotly_chart(fig4)
+
+expander4 = st.expander(label = 'Detailed view')
+expander4.write(map_user_df_filtered.loc[:, ['District', 'Quarter', 'App_opens']].reset_index(drop=True))

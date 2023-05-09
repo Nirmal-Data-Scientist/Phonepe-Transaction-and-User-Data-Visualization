@@ -49,6 +49,15 @@ if 'df_list' not in st.session_state:
         st.session_state['df_list'].append(var_name)
 
 
+def year_to_str(df):
+    df['Year'] = df["Year"].astype(str)
+
+for df_name in st.session_state['df_list']:
+    df = globals()[df_name]
+    year_to_str(df)
+    globals()[df_name] = df
+
+
 # App
 
 
@@ -108,7 +117,7 @@ add_vertical_space(2)
 col, buff = st.columns([2, 4])
 
 option = col.selectbox(
-                        label='Data',
+                        label='Select Dataset',
                         options=list(st.session_state['options'].keys()),
                         key='df'
                         )
