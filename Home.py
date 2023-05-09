@@ -1,40 +1,15 @@
 import io
 import pandas as pd
 import streamlit as st
-import mysql.connector
 import ydata_profiling
 from streamlit_player import st_player
 from streamlit_pandas_profiling import st_profile_report
 from streamlit_extras.metric_cards import style_metric_cards
 from streamlit_extras.add_vertical_space import add_vertical_space
 
-st.set_page_config(
-                    page_title = 'PhonePe Data Visualization', layout = 'wide',
-                    page_icon = 'Related Images and Videos/Logo.png'
-                    )
 
-st.title(':blue[PhonePe Data Visualization]')
+# Data Prep
 
-add_vertical_space(2)
-
-st.write(
-        """PhonePe has launched PhonePe Pulse, a data analytics platform that provides insights into how
-         Indians are using digital payments. With over 30 crore registered users and 2000 crore transactions, 
-         PhonePe, India's largest digital payments platform with 46% UPI market share, has a 
-         unique ring-side view into the Indian digital payments story. Through this app, you can now easily
-         access and visualize the data provided by PhonePe Pulse, gaining deep insights and 
-         interesting trends into how India transacts with digital payments."""
-         )
-
-add_vertical_space(2)
-
-st_player(url = "https://www.youtube.com/watch?v=c_1H6vivsiA", height = 480)
-
-add_vertical_space(2)
-
-st.image('Related Images and Videos/1.png')
-
-add_vertical_space(2)
 
 # Reading from csv so as to make it work for everyone in streamlit cloud app...
 # Otherwise there's another file named Home_with_SQL_Part.py in Miscellaneous directory in this same repo...
@@ -48,30 +23,6 @@ top_trans_pin_df = pd.read_csv(r'Miscellaneous/top_trans_pin.csv')
 top_user_dist_df = pd.read_csv(r'Miscellaneous/top_user_dist.csv')
 top_user_pin_df = pd.read_csv(r'Miscellaneous/top_user_pin.csv')
 
-col1, col2, col3 = st.columns(3)
-
-total_reg_users = top_user_dist_df['Registered_users'].sum()
-col1.metric(
-            label = 'Total Registered Users',
-            value = '{:.2f} Cr'.format(total_reg_users/100000000),
-            delta = 'Forward Trend'
-            )
-
-total_app_opens = map_user_df['App_opens'].sum()
-col2.metric(
-            label = 'Total App Opens', value = '{:.2f} Cr'.format(total_app_opens/100000000),
-            delta = 'Forward Trend'
-            )
-
-col3.metric(label = 'Total Transaction Count', value = '2000 Cr +', delta = 'Forward Trend')
-
-style_metric_cards()
-
-add_vertical_space(2)
-
-st.image('Related Images and Videos/pulse-video.gif', use_column_width = True)
-
-add_vertical_space(2)
 
 if 'options' not in st.session_state:
     st.session_state['options'] = {
@@ -97,6 +48,62 @@ if 'df_list' not in st.session_state:
         st.session_state[var_name] = globals()[var_name]
         st.session_state['df_list'].append(var_name)
 
+
+# App
+
+
+st.set_page_config(
+                    page_title = 'PhonePe Data Visualization', layout = 'wide',
+                    page_icon = 'Related Images and Videos/Logo.png'
+                    )
+
+st.title(':blue[PhonePe Data Visualization]')
+
+add_vertical_space(2)
+
+phonepe_description = """PhonePe has launched PhonePe Pulse, a data analytics platform that provides insights into
+                        how Indians are using digital payments. With over 30 crore registered users and 2000 crore 
+                        transactions, PhonePe, India's largest digital payments platform with 46% UPI market share,
+                        has a unique ring-side view into the Indian digital payments story. Through this app, you 
+                        can now easily access and visualize the data provided by PhonePe Pulse, gaining deep 
+                        insights and interesting trends into how India transacts with digital payments."""
+
+st.write(phonepe_description)
+
+add_vertical_space(2)
+
+st_player(url = "https://www.youtube.com/watch?v=c_1H6vivsiA", height = 480)
+
+add_vertical_space(2)
+
+st.image('Related Images and Videos/1.png')
+
+add_vertical_space(2)
+
+col1, col2, col3 = st.columns(3)
+
+total_reg_users = top_user_dist_df['Registered_users'].sum()
+col1.metric(
+            label = 'Total Registered Users',
+            value = '{:.2f} Cr'.format(total_reg_users/100000000),
+            delta = 'Forward Trend'
+            )
+
+total_app_opens = map_user_df['App_opens'].sum()
+col2.metric(
+            label = 'Total App Opens', value = '{:.2f} Cr'.format(total_app_opens/100000000),
+            delta = 'Forward Trend'
+            )
+
+col3.metric(label = 'Total Transaction Count', value = '2000 Cr +', delta = 'Forward Trend')
+
+style_metric_cards()
+
+add_vertical_space(2)
+
+st.image('Related Images and Videos/pulse.gif', use_column_width = True)
+
+add_vertical_space(2)
 
 col, buff = st.columns([2, 4])
 
