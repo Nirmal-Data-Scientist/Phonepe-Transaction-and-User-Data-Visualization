@@ -136,7 +136,8 @@ fig2.update_layout(
                           'x': 0.5,
                           'xanchor': 'center',
                           'y': 0.05,
-                          'yanchor': 'bottom'
+                          'yanchor': 'bottom',
+                          'font': dict(color='black')
                           },
                    height=600, width=900, coloraxis_colorbar=dict(thickness=20, len=0.5),
                    margin={"r":0,"t":0,"l":0,"b":0}
@@ -288,7 +289,8 @@ fig4.update_layout(
                           'x': 0.43,
                           'xanchor': 'center',
                           'y': 0.09,
-                          'yanchor': 'bottom'
+                          'yanchor': 'bottom',
+                          'font': dict(color='black')
                           }
                    )
 

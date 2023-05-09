@@ -106,7 +106,7 @@ col2.metric(
 
 col3.metric(label = 'Total Transaction Count', value = '2000 Cr +', delta = 'Forward Trend')
 
-style_metric_cards()
+style_metric_cards(background_color='200329')
 
 add_vertical_space(2)
 

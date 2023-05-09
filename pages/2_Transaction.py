@@ -130,7 +130,8 @@ fig2.update_layout(mapbox_style = 'carto-positron',
                           'x': 0.5,
                           'xanchor': 'center',
                           'y': 0.04,
-                          'yanchor': 'bottom'
+                          'yanchor': 'bottom',
+                          'font': dict(color='black')
                          },
                    margin={"r":0,"t":0,"l":0,"b":0}, width = 900, height = 500
                   )
