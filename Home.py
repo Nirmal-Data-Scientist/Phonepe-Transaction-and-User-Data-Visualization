@@ -101,7 +101,7 @@ style_metric_cards()
 
 add_vertical_space(2)
 
-st.image('Related Images and Videos/pulse.gif', use_column_width = True)
+st.image('Related Images and Videos/Pulse.gif', use_column_width = True)
 
 add_vertical_space(2)
 
