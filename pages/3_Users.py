@@ -121,7 +121,7 @@ fig2 = px.scatter_mapbox(
                          size="Registered_users", 
                          hover_name="District",
                          title=f"Registered Users by District",
-                         color_continuous_scale = 'viridis'
+                         color_discrete_sequence= px.colors.sequential.Plotly3
                      )
 
 fig2.update_layout(

@@ -115,7 +115,8 @@ fig2 = px.scatter_mapbox(map_df, lat = "Latitude", lon = "Longitude", hover_name
                         size = "Transaction_amount",
                         hover_data = {"Transaction_count": True, "Transaction_amount": True},
                         title = title2,
-                        height=600, width=800
+                        height=600, width=800,
+                        color_discrete_sequence= px.colors.sequential.Plotly3
                         )
 
 fig2.update_layout(mapbox_style = 'carto-positron',
