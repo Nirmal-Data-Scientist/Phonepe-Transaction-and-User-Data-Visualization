@@ -93,7 +93,7 @@ if selected_states:
                   )
 
     fig2.update_layout(
-                       width=850, height=550,
+                       width=900, height=550,
                        title={
                               'x': 0.5,
                               'xanchor': 'center',
