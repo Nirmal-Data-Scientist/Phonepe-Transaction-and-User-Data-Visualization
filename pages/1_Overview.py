@@ -14,13 +14,14 @@ map_user = st.session_state["map_user_df"]
 
 #1
 
+trans_type_count = agg_trans.groupby('Transaction_type')['Transaction_count'].sum()
 
 total_trans_count = agg_trans['Transaction_count'].sum()
-trans_type_count = agg_trans.groupby('Transaction_type')['Transaction_count'].sum()
-trans_type_perc = round(trans_type_count / total_trans_count * 100, 2)
+
+trans_type_perc = round(trans_type_count / total_trans_count * 100, 2).reset_index()
 
 trans_type_fig = px.pie(
-                        trans_type_perc, names=trans_type_perc.index,
+                        trans_type_perc, names='Transaction_type',
                         values='Transaction_count', hole=.65,
                         hover_data={'Transaction_count': False}
                         )
@@ -50,21 +51,18 @@ trans_state_fig.update_layout(
 #3
 
 
-trans_district = map_trans.groupby(['State', 'District'])[[
-                                                            'Transaction_count', 'Transaction_amount'
-                                                            ]
-                                                          ].sum().reset_index()
+trans_district = map_trans.groupby(['State', 'District'])[['Transaction_count']].sum().reset_index()
 
 trans_district_sorted = trans_district.sort_values(by='Transaction_count', ascending=False).head(15)
 
 trans_district_fig = px.bar(
-                            trans_district_sorted, y='District',
-                            x='Transaction_count', text='Transaction_count',
-                            hover_name='District', height=600,
+                            trans_district_sorted, x='Transaction_count',
+                            y='District', orientation='h',
+                            text='Transaction_count', text_auto='.2s',
                             labels = {'Transaction_count': "Transaction Count"},
-                            hover_data = {'State': True, 'District': False}
+                            hover_name='State',
+                            hover_data={'State': False, 'District': True}
                             )
-trans_district_fig.update_traces(texttemplate='%{text:.2s}', textposition='inside')
 
 trans_district_fig.update_layout(
                                  yaxis = dict(autorange="reversed"),
@@ -75,7 +73,6 @@ trans_district_fig.update_layout(
 #4
 
 
-total_reg_users = map_user['Registered_users'].sum()
 user_state = map_user.groupby('State')['Registered_users'].sum().reset_index()
 
 with open(r"Miscellaneous/india_states.json") as f:
@@ -94,7 +91,7 @@ user_state_fig = px.choropleth(
                                 )
 
 user_state_fig.update_geos(fitbounds='locations', visible=False)
-user_state_fig.update_layout(height=600, width=900, coloraxis_colorbar=dict(thickness=20, len=0.5))  
+user_state_fig.update_layout(height=600, width=900)  
 
 
 # App

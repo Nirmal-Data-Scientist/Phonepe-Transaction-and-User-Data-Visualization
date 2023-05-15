@@ -68,13 +68,13 @@ fig1 = px.treemap(
 
 fig1.update_layout(
                    width=975, height=600,
-                   coloraxis_colorbar=dict(tickformat='.1%'),
-                   margin=dict(l=20, r=20, t=60, b=20),
+                   coloraxis_colorbar=dict(tickformat='.1%', len = 0.85),
+                   margin=dict(l=20, r=20, t=0, b=20),
                    title = {
                             "text": title1 ,
                              'x': 0.45,
                              'xanchor': 'center',
-                             'y': 0.004,
+                             'y': 0.007,
                              'yanchor': 'bottom'
                              }
                    )
@@ -99,15 +99,15 @@ st.subheader(':blue[Registered Users Hotspots - Disrict]')
 
 col4, col5, col6 = st.columns([5, 3, 1])
 
-state_options = ['All'] + [state for state in st.session_state['states']]
-quarter_options = ["All"] + list(map(str, st.session_state['quarters']))
-
 state2 = col4.selectbox('State', options=state_options, key='state2')
 year2 = col5.selectbox('Year', options=st.session_state['years'], key='year2')
 quarter2 = col6.selectbox("Quarter", options=quarter_options, key='quarter2')
 
 if state2 == 'All':
-    map_user_df_filtered = map_user_df1
+    map_user_df_filtered = map_user_df1[(map_user_df1["Year"] == year2)]
+    
+    if quarter2 != 'All':
+        map_user_df_filtered = map_user_df_filtered[map_user_df_filtered['Quarter'] == int(quarter2)]    
 else:
     map_user_df_filtered = map_user_df1[(map_user_df1["State"] == state2) & (map_user_df1["Year"] == year2)]
     
@@ -120,6 +120,7 @@ fig2 = px.scatter_mapbox(
                          lon="Longitude", 
                          size="Registered_users", 
                          hover_name="District",
+                         hover_data={'State': True, 'Quarter': True},
                          title=f"Registered Users by District",
                          color_discrete_sequence= px.colors.sequential.Plotly3
                      )
@@ -127,12 +128,7 @@ fig2 = px.scatter_mapbox(
 fig2.update_layout(
                    mapbox_style = 'carto-positron',
                    mapbox_zoom = 3.5, mapbox_center = {"lat": 20.93684, "lon": 78.96288},
-                   geo=dict(
-                            scope = 'asia', projection_type = 'equirectangular',
-                            showocean = True,
-                            oceancolor = 'rgb(229, 255, 255)',
-                            showcountries = True
-                            ),
+                   geo=dict(scope = 'asia', projection_type = 'equirectangular'),
                    title={
                           'x': 0.5,
                           'xanchor': 'center',
@@ -140,11 +136,9 @@ fig2.update_layout(
                           'yanchor': 'bottom',
                           'font': dict(color='black')
                           },
-                   height=600, width=900, coloraxis_colorbar=dict(thickness=20, len=0.5),
+                   height=600, width=900,
                    margin={"r":0,"t":0,"l":0,"b":0}
                   )
-
-fig2.update_geos(fitbounds='locations', visible=False)
 
 st.plotly_chart(fig2)
 
@@ -159,7 +153,7 @@ add_vertical_space(2)
 
 st.subheader(':blue[Top Districts by Registered Users]')
 
-col7, col8, buff1 = st.columns([5, 3, 4])
+col7, col8, buff1 = st.columns([5, 2, 5])
 
 state3 = col7.selectbox('State', options = state_options, key='state3')
 year3 = col8.selectbox('Year', options = st.session_state['years'], key='year3')
@@ -180,14 +174,15 @@ if state3 == "All":
 else:
     
     top_user_dist_df_filtered = top_user_dist_df1[
-                                                  (top_user_dist_df1['State']==state3) & 
+                                                  (top_user_dist_df1['State']==state3)
+                                                                 & 
                                                   (top_user_dist_df1['Year']==year3)
-                                                   ]
+                                                   ].groupby('District').sum().reset_index()
     
-    top_user_dist_df_filtered = top_user_dist_df_filtered.groupby('District').sum().reset_index().sort_values(
-                                                                                          by = 'Registered_users',
-                                                                                          ascending = False
-                                                                                          ).head(10)
+    top_user_dist_df_filtered = top_user_dist_df_filtered.sort_values(
+                                                                      by = 'Registered_users',
+                                                                      ascending = False
+                                                                      ).head(10)
     
     title3 = f'Top districts in {state3} by registered users in {year3}'
 
@@ -197,17 +192,12 @@ fig3 = px.bar(
               y='District', 
               color='Registered_users', 
               color_continuous_scale='Greens', 
-              orientation='h', 
+              orientation='h', labels={'Registered_users': 'Registered Users'},
               hover_name='District', 
               hover_data=['Registered_users']
               )
 
-fig3.update_coloraxes(showscale=True, colorbar=dict(title='Registered Users', tickformat=',.0f'))
-
-fig3.update_traces(
-                   hovertemplate='<b>%{hovertext}</b><br>Registered users: %{x:,}<br>',
-                   marker=dict(line=dict(width=0.5, color='Gray'))
-                   )
+fig3.update_traces(hovertemplate='<b>%{hovertext}</b><br>Registered users: %{x:,}<br>')
 
 fig3.update_layout(
                    height=500, width=950,
@@ -216,7 +206,7 @@ fig3.update_layout(
                           'text': title3,
                           'x': 0.5,
                           'xanchor': 'center',
-                          'y': 0.005,
+                          'y': 0.007,
                           'yanchor': 'bottom'
                           }
                    )
@@ -234,12 +224,11 @@ add_vertical_space(2)
 
 st.subheader(':blue[Number of app opens by District]')
 
-col9, col10, buff2 = st.columns([5, 3, 7])
+col9, col10, buff2 = st.columns([2, 2, 7])
 
 year_options = [year for year in st.session_state['years'] if year != '2018']
 
 year4 = col9.selectbox('Year', options=year_options, key='year4')
-
 
 if year4 == '2019':
     quarter_options.remove('1')
@@ -258,18 +247,15 @@ fig4 = px.density_mapbox(
                          map_user_df_filtered,
                          lat='Latitude', lon='Longitude',
                          z='App_opens', radius=20,
-                         center=dict(
-                                     lat=20.5937,
-                                     lon=78.9629
-                                     ),
-                        zoom=3, hover_name='District',
-                        mapbox_style="stamen-watercolor",
-                        opacity=0.8,
-                        hover_data={
-                                    'Latitude': False,
-                                    'Longitude': False,
-                                    'State': True
-                                    },
+                         center=dict(lat=20.5937,lon=78.9629),
+                         zoom=3, hover_name='District',
+                         mapbox_style="stamen-watercolor",
+                         opacity=0.8, labels={'App_opens': 'App Opens'},
+                         hover_data={
+                                     'Latitude': False,
+                                     'Longitude': False,
+                                     'State': True
+                                     },
                         color_continuous_scale = 'Blues'
                         )
 
@@ -286,6 +272,7 @@ fig4.update_layout(
                                         ]
                                ),
                    width=925, height=600,
+                   coloraxis_colorbar=dict(len=0.9),
                    title={
                           'text': 'App Opens Density Map',
                           'x': 0.43,

@@ -38,14 +38,10 @@ top_pincodes = pin_trans.groupby('Pincode')[
 
 
 def filter_top_trans_dist(top_trans_dist, year, quarter):
-    if quarter == 'All':
-        filtered_top_trans_dist = top_trans_dist[top_trans_dist['Year'] == year]
-    else:
-        filtered_top_trans_dist = top_trans_dist[
-                                                 (top_trans_dist['Year'] == year)
-                                                                &
-                                                 (top_trans_dist['Quarter'] == quarter)
-                                                 ]
+    
+    filtered_top_trans_dist = top_trans_dist[top_trans_dist['Year'] == year]
+    if quarter != 'All':
+        filtered_top_trans_dist = filter_top_trans_dist[(filter_top_trans_dist['Quarter'] == quarter)]
     return filtered_top_trans_dist
 
 
@@ -69,21 +65,11 @@ df = map_trans[map_trans['Region'] == region1]
 
 state1 = col2.selectbox('State', df['State'].unique(), key='state1')
 
-if state1 != 'All':
-    
-    df = df[df['State'] == state1]
+df = df[df['State'] == state1]
 
-    district_options = list(df['District'].unique())
-    
-    district1 = col3.selectbox('District', district_options, key='district1')
+district1 = col3.selectbox('District', df['District'].unique(), key='district1')
 
-    if district1 != 'All':
-        
-        df = df[df['District'] == district1]
-
-else:
-    
-    district1 = ''
+df = df[df['District'] == district1]
 
 year_options = ['All'] + [year for year in st.session_state['years']]
 year1 = col4.selectbox('Year', year_options, key='year1')
@@ -97,14 +83,6 @@ if year1 != 'All':
     
     title1=f'Transaction count trend for {district1} district in {state1} during {year1}'
     title2=f'Transaction amount trend for {district1} district in {state1} during {year1}'
-    
-if state1 == 'All':
-    
-    df = map_trans
-    
-    if year1 != 'All':
-        df = df[df['Year'] == year1]
-
 
 fig1 = px.line(df, x='Quarter', y='Transaction_count', color='Year', title=title1)
 
@@ -167,23 +145,23 @@ quarter2 = col7.selectbox("Quarter", quarter_options, key="quarter2")
 if state2 != "All":
     top_trans_dist = top_trans_dist[top_trans_dist["State"] == state2]
 
-if year2:
-    top_trans_dist = top_trans_dist[top_trans_dist["Year"] == year2]
+top_trans_dist = top_trans_dist[top_trans_dist["Year"] == year2]
 
 if quarter2 != "All":
     top_trans_dist = top_trans_dist[top_trans_dist["Quarter"] == quarter2]
 
+
 top_dist_grouped_1 = top_trans_dist.groupby("District")["Transaction_count"].sum().nlargest(10).index.tolist()
+
+top_trans_dist_filtered_1 = top_trans_dist[top_trans_dist["District"].isin(top_dist_grouped_1)]
+
 
 suffix1 = " quarters" if quarter2 == 'All' else "st" if quarter2 == 1 else "nd" if quarter2 == 2 else "rd" if quarter2 == 3 else "th"
 
 title3 = f"Top districts in {'India' if state2 == 'All' else state2} by Transaction count during {str(quarter2).lower()}{suffix1} {'' if quarter2 == 'All' else 'quarter'} of {year2}"
 
-
-top_trans_dist_filtered_1 = top_trans_dist[top_trans_dist["District"].isin(top_dist_grouped_1)]
-
-
 axis_format = '~s'
+
 
 chart1 = alt.Chart(
                     top_trans_dist_filtered_1,
@@ -213,11 +191,13 @@ chart1 = alt.Chart(
                                                                                     )
                                                              ).configure_axis(grid=False)
 
+
 top_dist_grouped_2 = top_trans_dist.groupby("District")["Transaction_amount"].sum().nlargest(10).index.tolist()
 
 top_trans_dist_filtered_2 = top_trans_dist[top_trans_dist["District"].isin(top_dist_grouped_2)]
 
 title4 = f"Top districts in {'India' if state2 == 'All' else state2} by Transaction amount during {str(quarter2).lower()}{suffix1} {'' if quarter2 == 'All' else 'quarter'} of {year2}"
+
 
 chart2 = alt.Chart(
                    top_trans_dist_filtered_2,

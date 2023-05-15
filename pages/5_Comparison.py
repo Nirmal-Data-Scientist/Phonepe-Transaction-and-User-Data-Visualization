@@ -47,6 +47,7 @@ fig1 = sns.catplot(
 
 for ax in fig1.axes.flat:
     ax.set_yticklabels(['₹. {:,.0f}B'.format(y/1e9) for y in ax.get_yticks()])
+    ax.set_ylabel('Transaction Amount')
 
 sns.set_style("white")
 st.pyplot(fig1)
@@ -93,7 +94,7 @@ if selected_states:
                   )
 
     fig2.update_layout(
-                       width=850, height=550,
+                       width=900, height=550,
                        title={
                               'x': 0.5,
                               'xanchor': 'center',
@@ -143,13 +144,11 @@ fig3.update_layout(
                            }
                     )
 
-fig3.update_traces(textposition='inside', textinfo='percent+label')
+fig3.update_traces(textposition='inside', textinfo='percent+label') 
 
 st.plotly_chart(fig3)
 
 filtered_df['Year'] = filtered_df["Year"].astype(int)
-
-st.write()
 
 expander1 = st.expander('Detailed view')
 expander1.dataframe(
